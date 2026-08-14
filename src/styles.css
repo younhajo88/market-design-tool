@@ -1,0 +1,91 @@
+:root {
+  color: #1f2933;
+  background: #f6f7f2;
+  font-family:
+    Pretendard,
+    'Noto Sans KR',
+    'Apple SD Gothic Neo',
+    system-ui,
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  gap: 24px;
+  padding: 24px;
+}
+
+.editor-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.editor-panel h1 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.field-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.field-stack label {
+  display: grid;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.field-stack input {
+  width: 100%;
+  border: 1px solid #b8c0ad;
+  border-radius: 8px;
+  padding: 12px;
+  background: #ffffff;
+}
+
+.preview-panel {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+}
+
+.preview-placeholder {
+  width: min(100%, 720px);
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  border: 1px dashed #87906f;
+  background: #ffffff;
+  color: #66704f;
+  text-align: center;
+  padding: 20px;
+}
+
+@media (max-width: 760px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+
+  .preview-panel {
+    order: -1;
+  }
+}
