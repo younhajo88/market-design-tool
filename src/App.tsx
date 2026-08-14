@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { CANVAS_SIZE, DEFAULT_TEXT } from './canvas/constants';
+import { exportWebp } from './canvas/exportWebp';
 import { clampScale, getInitialTransform, getMinimumCoverScale } from './canvas/geometry';
+import { ExportActions, downloadBlob } from './components/ExportActions';
 import { ImageUploader } from './components/ImageUploader';
 import { PromoCanvas } from './components/PromoCanvas';
 import { TextControls } from './components/TextControls';
@@ -49,6 +51,45 @@ export default function App() {
     }));
   };
 
+  const handleExport = async () => {
+    if (!image) {
+      return;
+    }
+
+    try {
+      const result = await exportWebp(image, text, transform);
+      downloadBlob(result.blob, result.fileName);
+      setMessage('');
+    } catch {
+      setMessage('이미지 저장에 실패했습니다. 브라우저를 업데이트하거나 다른 브라우저에서 다시 시도해주세요.');
+    }
+  };
+
+  const handleShare = async () => {
+    if (!image || !navigator.share) {
+      return;
+    }
+
+    try {
+      const result = await exportWebp(image, text, transform);
+      const file = new File([result.blob], result.fileName, { type: result.mimeType });
+      await navigator.share({ files: [file], title: '홍보이미지디자인툴' });
+      setMessage('');
+    } catch {
+      setMessage('이미지 저장에 실패했습니다. 브라우저를 업데이트하거나 다른 브라우저에서 다시 시도해주세요.');
+    }
+  };
+
+  const canShare = (() => {
+    if (!image || !navigator.share || !navigator.canShare) {
+      return false;
+    }
+    const probeFile = new File([new Blob(['probe'], { type: 'image/webp' })], 'probe.webp', {
+      type: 'image/webp',
+    });
+    return navigator.canShare({ files: [probeFile] });
+  })();
+
   return (
     <main className="app-shell">
       <section className="editor-panel" aria-labelledby="app-title">
@@ -67,6 +108,12 @@ export default function App() {
           minimumScale={minimumScale}
           disabled={!image}
           onScaleChange={handleScaleChange}
+        />
+        <ExportActions
+          canExport={Boolean(image)}
+          canShare={canShare}
+          onExport={handleExport}
+          onShare={handleShare}
         />
       </section>
 

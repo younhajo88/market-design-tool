@@ -74,21 +74,11 @@ function fitFontSize(
 }
 
 function getSourceWidth(source: CanvasImageSource): number {
-  if ('naturalWidth' in source && source.naturalWidth) {
-    return source.naturalWidth;
-  }
-  if ('videoWidth' in source && source.videoWidth) {
-    return source.videoWidth;
-  }
-  return source.width;
+  const candidate = source as { naturalWidth?: number; videoWidth?: number; width?: number };
+  return candidate.naturalWidth ?? candidate.videoWidth ?? candidate.width ?? CANVAS_SIZE;
 }
 
 function getSourceHeight(source: CanvasImageSource): number {
-  if ('naturalHeight' in source && source.naturalHeight) {
-    return source.naturalHeight;
-  }
-  if ('videoHeight' in source && source.videoHeight) {
-    return source.videoHeight;
-  }
-  return source.height;
+  const candidate = source as { naturalHeight?: number; videoHeight?: number; height?: number };
+  return candidate.naturalHeight ?? candidate.videoHeight ?? candidate.height ?? CANVAS_SIZE;
 }
