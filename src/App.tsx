@@ -7,10 +7,12 @@ import { ImageUploader } from './components/ImageUploader';
 import { PromoCanvas } from './components/PromoCanvas';
 import { TextControls } from './components/TextControls';
 import { TransformControls } from './components/TransformControls';
+import { addRecentColor, readRecentColors, writeRecentColors } from './recentColors';
 import type { ExportFormat, ImageTransform, PromoText } from './types';
 import './styles.css';
 
 const EMPTY_TRANSFORM: ImageTransform = { x: 0, y: 0, scale: 1 };
+const EXPORT_ERROR_MESSAGE = '이미지 저장에 실패했습니다. 브라우저를 업데이트하거나 다른 브라우저에서 다시 시도해주세요.';
 
 export default function App() {
   const [text, setText] = useState<PromoText>(DEFAULT_TEXT);
@@ -19,6 +21,7 @@ export default function App() {
   const [message, setMessage] = useState<string>('');
   const [format, setFormat] = useState<ExportFormat>('jpg');
   const [strokeColor, setStrokeColor] = useState(DEFAULT_PROMO_STYLE.strokeColor);
+  const [recentStrokeColors, setRecentStrokeColors] = useState<string[]>(() => readRecentColors());
 
   const minimumScale = useMemo(() => {
     if (!image) {
@@ -29,6 +32,14 @@ export default function App() {
 
   const updateText = (field: keyof PromoText, value: string) => {
     setText((current) => ({ ...current, [field]: value }));
+  };
+
+  const rememberStrokeColor = () => {
+    setRecentStrokeColors((currentColors) => {
+      const nextColors = addRecentColor(currentColors, strokeColor);
+      writeRecentColors(nextColors);
+      return nextColors;
+    });
   };
 
   const handleImageLoaded = (loadedImage: HTMLImageElement) => {
@@ -55,9 +66,10 @@ export default function App() {
     try {
       const result = await exportImage(image, text, transform, format, new Date(), { strokeColor });
       downloadBlob(result.blob, result.fileName);
+      rememberStrokeColor();
       setMessage('');
     } catch {
-      setMessage('이미지 저장에 실패했습니다. 브라우저를 업데이트하거나 다른 브라우저에서 다시 시도해주세요.');
+      setMessage(EXPORT_ERROR_MESSAGE);
     }
   };
 
@@ -70,9 +82,10 @@ export default function App() {
       const result = await exportImage(image, text, transform, format, new Date(), { strokeColor });
       const file = new File([result.blob], result.fileName, { type: result.mimeType });
       await navigator.share({ files: [file], title: '홍보이미지디자인툴' });
+      rememberStrokeColor();
       setMessage('');
     } catch {
-      setMessage('이미지 저장에 실패했습니다. 브라우저를 업데이트하거나 다른 브라우저에서 다시 시도해주세요.');
+      setMessage(EXPORT_ERROR_MESSAGE);
     }
   };
 
@@ -101,8 +114,10 @@ export default function App() {
         <TextControls
           value={text}
           strokeColor={strokeColor}
+          recentStrokeColors={recentStrokeColors}
           onChange={updateText}
           onStrokeColorChange={setStrokeColor}
+          onRecentStrokeColorSelect={setStrokeColor}
         />
         <ExportActions
           canExport={Boolean(image)}
