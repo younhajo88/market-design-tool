@@ -4,6 +4,10 @@ export type PromoText = {
   footer: string;
 };
 
+export type PromoStyle = {
+  strokeColor: string;
+};
+
 export type ImageTransform = {
   x: number;
   y: number;

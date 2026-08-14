@@ -1,5 +1,5 @@
-import type { ExportFormat, ExportMimeType, ExportResult, ImageTransform, PromoText } from '../types';
-import { CANVAS_SIZE, WEBP_QUALITY } from './constants';
+import type { ExportFormat, ExportMimeType, ExportResult, ImageTransform, PromoStyle, PromoText } from '../types';
+import { CANVAS_SIZE, DEFAULT_PROMO_STYLE, WEBP_QUALITY } from './constants';
 import { renderPromo } from './renderPromo';
 
 const FORMAT_CONFIG: Record<ExportFormat, { mimeType: ExportMimeType; quality?: number }> = {
@@ -26,6 +26,7 @@ export async function exportImage(
   transform: ImageTransform,
   format: ExportFormat,
   now = new Date(),
+  style: PromoStyle = DEFAULT_PROMO_STYLE,
 ): Promise<ExportResult> {
   const canvas = document.createElement('canvas');
   canvas.width = CANVAS_SIZE;
@@ -38,9 +39,7 @@ export async function exportImage(
 
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-
-
-  renderPromo(ctx, source, text, transform);
+  renderPromo(ctx, source, text, transform, style);
 
   const config = FORMAT_CONFIG[format];
   const blob = await new Promise<Blob | null>((resolve) => {

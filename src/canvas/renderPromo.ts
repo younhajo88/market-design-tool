@@ -1,5 +1,5 @@
-import type { ImageTransform, PromoText } from '../types';
-import { CANVAS_SIZE, TEMPLATE_BLUE, TEMPLATE_SHADOW, TEMPLATE_WHITE } from './constants';
+import type { ImageTransform, PromoStyle, PromoText } from '../types';
+import { CANVAS_SIZE, DEFAULT_PROMO_STYLE, TEMPLATE_SHADOW, TEMPLATE_WHITE } from './constants';
 
 const FONT_FAMILY = '"Arial Black", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif';
 
@@ -16,6 +16,7 @@ export function renderPromo(
   source: CanvasImageSource,
   text: PromoText,
   transform: ImageTransform,
+  style: PromoStyle = DEFAULT_PROMO_STYLE,
 ): void {
   ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
   ctx.drawImage(
@@ -30,16 +31,16 @@ export function renderPromo(
     { value: text.title, y: 94, maxWidth: 880, fontSize: 104, strokeWidth: 24 },
     { value: text.subtitle, y: 226, maxWidth: 780, fontSize: 88, strokeWidth: 22 },
     { value: text.footer, y: 912, maxWidth: 900, fontSize: 94, strokeWidth: 24 },
-  ]);
+  ], style);
 }
 
-function drawTemplateText(ctx: CanvasRenderingContext2D, lines: TextLine[]) {
+function drawTemplateText(ctx: CanvasRenderingContext2D, lines: TextLine[], style: PromoStyle) {
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.lineJoin = 'round';
   ctx.fillStyle = TEMPLATE_WHITE;
-  ctx.strokeStyle = TEMPLATE_BLUE;
+  ctx.strokeStyle = style.strokeColor;
   ctx.shadowColor = TEMPLATE_SHADOW;
   ctx.shadowBlur = 0;
   ctx.shadowOffsetX = 7;

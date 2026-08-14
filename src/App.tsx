@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { DEFAULT_TEXT } from './canvas/constants';
+import { DEFAULT_PROMO_STYLE, DEFAULT_TEXT } from './canvas/constants';
 import { exportImage } from './canvas/exportWebp';
 import { clampScale, getInitialTransform, getMinimumCoverScale } from './canvas/geometry';
 import { ExportActions, downloadBlob } from './components/ExportActions';
@@ -18,6 +18,7 @@ export default function App() {
   const [transform, setTransform] = useState<ImageTransform>(EMPTY_TRANSFORM);
   const [message, setMessage] = useState<string>('');
   const [format, setFormat] = useState<ExportFormat>('jpg');
+  const [strokeColor, setStrokeColor] = useState(DEFAULT_PROMO_STYLE.strokeColor);
 
   const minimumScale = useMemo(() => {
     if (!image) {
@@ -52,7 +53,7 @@ export default function App() {
     }
 
     try {
-      const result = await exportImage(image, text, transform, format);
+      const result = await exportImage(image, text, transform, format, new Date(), { strokeColor });
       downloadBlob(result.blob, result.fileName);
       setMessage('');
     } catch {
@@ -66,7 +67,7 @@ export default function App() {
     }
 
     try {
-      const result = await exportImage(image, text, transform, format);
+      const result = await exportImage(image, text, transform, format, new Date(), { strokeColor });
       const file = new File([result.blob], result.fileName, { type: result.mimeType });
       await navigator.share({ files: [file], title: '홍보이미지디자인툴' });
       setMessage('');
@@ -97,7 +98,12 @@ export default function App() {
           disabled={!image}
           onScaleChange={handleScaleChange}
         />
-        <TextControls value={text} onChange={updateText} />
+        <TextControls
+          value={text}
+          strokeColor={strokeColor}
+          onChange={updateText}
+          onStrokeColorChange={setStrokeColor}
+        />
         <ExportActions
           canExport={Boolean(image)}
           canShare={canShare}
@@ -113,6 +119,7 @@ export default function App() {
           <PromoCanvas
             image={image}
             text={text}
+            strokeColor={strokeColor}
             transform={transform}
             onTransformChange={setTransform}
           />

@@ -7,11 +7,12 @@ import type { ImageTransform, PromoText } from '../types';
 type PromoCanvasProps = {
   image: HTMLImageElement | null;
   text: PromoText;
+  strokeColor: string;
   transform: ImageTransform;
   onTransformChange: (transform: ImageTransform) => void;
 };
 
-export function PromoCanvas({ image, text, transform, onTransformChange }: PromoCanvasProps) {
+export function PromoCanvas({ image, text, strokeColor, transform, onTransformChange }: PromoCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastPointerRef = useRef<{ x: number; y: number } | null>(null);
 
@@ -28,8 +29,8 @@ export function PromoCanvas({ image, text, transform, onTransformChange }: Promo
 
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    renderPromo(ctx, image, text, transform);
-  }, [image, text, transform]);
+    renderPromo(ctx, image, text, transform, { strokeColor });
+  }, [image, text, strokeColor, transform]);
 
   return (
     <canvas

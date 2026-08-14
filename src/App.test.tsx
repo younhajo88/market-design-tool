@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
@@ -32,12 +32,27 @@ describe('App', () => {
     expect(screen.getByLabelText('하단 타이틀')).toHaveValue('예약후 당일수령');
   });
 
+  it('uses the existing blue as the default shared text outline color', () => {
+    render(<App />);
+
+    expect(screen.getByLabelText('글자 테두리 색상')).toHaveValue('#17207a');
+  });
+
+  it('updates the shared text outline color', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    fireEvent.change(screen.getByLabelText('글자 테두리 색상'), { target: { value: '#c1121f' } });
+
+    expect(screen.getByLabelText('글자 테두리 색상')).toHaveValue('#c1121f');
+  });
+
   it('places the photo size control before text inputs', () => {
     render(<App />);
 
-    const scaleControl = screen.getByText('사진 크기').compareDocumentPosition(screen.getByText('타이틀'));
+    const relation = screen.getByText('사진 크기').compareDocumentPosition(screen.getByText('타이틀'));
 
-    expect(scaleControl & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(relation & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('updates promo text inputs', async () => {
