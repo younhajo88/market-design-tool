@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { CANVAS_SIZE, DEFAULT_TEXT } from './canvas/constants';
+import { DEFAULT_TEXT } from './canvas/constants';
 import { exportImage } from './canvas/exportWebp';
 import { clampScale, getInitialTransform, getMinimumCoverScale } from './canvas/geometry';
 import { ExportActions, downloadBlob } from './components/ExportActions';
@@ -17,7 +17,6 @@ export default function App() {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [transform, setTransform] = useState<ImageTransform>(EMPTY_TRANSFORM);
   const [message, setMessage] = useState<string>('');
-  const [warning, setWarning] = useState<string>('');
   const [format, setFormat] = useState<ExportFormat>('jpg');
 
   const minimumScale = useMemo(() => {
@@ -35,11 +34,6 @@ export default function App() {
     setImage(loadedImage);
     setTransform(getInitialTransform({ width: loadedImage.naturalWidth, height: loadedImage.naturalHeight }));
     setMessage('');
-    setWarning(
-      loadedImage.naturalWidth < CANVAS_SIZE || loadedImage.naturalHeight < CANVAS_SIZE
-        ? '원본 사진 해상도가 낮아 결과물이 흐릴 수 있습니다.'
-        : '',
-    );
   };
 
   const handleScaleChange = (scale: number) => {
@@ -93,23 +87,17 @@ export default function App() {
 
   return (
     <main className="app-shell">
-      <section className="editor-panel" aria-labelledby="app-title">
-        <div className="title-block">
-          <h1 id="app-title">홍보이미지디자인툴</h1>
-          <p>과일 사진을 올리고 문구만 바꿔 홍보 이미지를 저장하세요.</p>
-        </div>
-
+      <section className="editor-panel" aria-label="홍보 이미지 편집 도구">
         <ImageUploader onImageLoaded={handleImageLoaded} onError={setMessage} />
         {message ? <p className="status-message" role="alert">{message}</p> : null}
-        {warning ? <p className="warning-message">{warning}</p> : null}
 
-        <TextControls value={text} onChange={updateText} />
         <TransformControls
           scale={transform.scale}
           minimumScale={minimumScale}
           disabled={!image}
           onScaleChange={handleScaleChange}
         />
+        <TextControls value={text} onChange={updateText} />
         <ExportActions
           canExport={Boolean(image)}
           canShare={canShare}
@@ -134,6 +122,7 @@ export default function App() {
     </main>
   );
 }
+
 function selectedMimeType(format: ExportFormat) {
   if (format === 'jpg') {
     return 'image/jpeg';

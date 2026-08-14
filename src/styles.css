@@ -18,7 +18,8 @@ body {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -33,24 +34,7 @@ input {
 .editor-panel {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-}
-
-.title-block {
-  display: grid;
-  gap: 6px;
-}
-
-.title-block h1 {
-  margin: 0;
-  font-size: 28px;
-  line-height: 1.2;
-}
-
-.title-block p {
-  margin: 0;
-  color: #59624c;
-  line-height: 1.5;
+  gap: 16px;
 }
 
 .field-stack {
@@ -59,18 +43,21 @@ input {
 }
 
 .field-stack label,
-.slider-field {
+.slider-field,
+.format-field {
   display: grid;
   gap: 7px;
   font-weight: 700;
 }
 
-.field-stack input {
+.field-stack input,
+.format-field select {
   width: 100%;
   border: 1px solid #b8c0ad;
   border-radius: 8px;
   padding: 12px;
   background: #ffffff;
+  color: #1f2933;
 }
 
 .slider-field input {
@@ -106,45 +93,20 @@ input {
   white-space: nowrap;
 }
 
-.status-message,
-.warning-message {
+.status-message {
   margin: 0;
   border-radius: 8px;
   padding: 10px 12px;
   line-height: 1.45;
-}
-
-.status-message {
   background: #fff1f0;
   color: #9f1f18;
 }
-
-.warning-message {
-  background: #fff8d8;
-  color: #695000;
-}
-
 
 .export-section {
   display: grid;
   gap: 10px;
 }
 
-.format-field {
-  display: grid;
-  gap: 7px;
-  font-weight: 700;
-}
-
-.format-field select {
-  width: 100%;
-  border: 1px solid #b8c0ad;
-  border-radius: 8px;
-  padding: 11px 12px;
-  background: #ffffff;
-  color: #1f2933;
-  font: inherit;
-}
 .export-actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -171,6 +133,7 @@ input {
   color: #707865;
   cursor: not-allowed;
 }
+
 .preview-panel {
   display: grid;
   place-items: center;
@@ -214,54 +177,7 @@ input {
     padding: 14px;
   }
 
-  
-.export-section {
-  display: grid;
-  gap: 10px;
-}
-
-.format-field {
-  display: grid;
-  gap: 7px;
-  font-weight: 700;
-}
-
-.format-field select {
-  width: 100%;
-  border: 1px solid #b8c0ad;
-  border-radius: 8px;
-  padding: 11px 12px;
-  background: #ffffff;
-  color: #1f2933;
-  font: inherit;
-}
-.export-actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.export-actions button {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border: 1px solid #285b37;
-  border-radius: 8px;
-  background: #316b43;
-  color: #ffffff;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.export-actions button:disabled {
-  border-color: #b8c0ad;
-  background: #d9decf;
-  color: #707865;
-  cursor: not-allowed;
-}
-.preview-panel {
+  .preview-panel {
     order: -1;
   }
 

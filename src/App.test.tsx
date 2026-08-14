@@ -22,26 +22,34 @@ afterEach(() => {
 });
 
 describe('App', () => {
-  it('renders the editor as the first screen', () => {
+  it('renders a compact editor without title or instructional copy', () => {
     render(<App />);
 
-    expect(screen.getByRole('heading', { name: '홍보이미지디자인툴' })).toBeInTheDocument();
-    expect(screen.getByLabelText('타이틀')).toHaveValue('상품명');
-    expect(screen.getByLabelText('서브타이틀')).toHaveValue('수량 또는 그람 및 가격');
+    expect(screen.queryByRole('heading', { name: '홍보이미지디자인툴' })).not.toBeInTheDocument();
+    expect(screen.queryByText('과일 사진을 올리고 문구만 바꿔 홍보 이미지를 저장하세요.')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('타이틀')).toHaveValue('');
+    expect(screen.getByLabelText('서브타이틀')).toHaveValue('');
     expect(screen.getByLabelText('하단 타이틀')).toHaveValue('예약후 당일수령');
+  });
+
+  it('places the photo size control before text inputs', () => {
+    render(<App />);
+
+    const scaleControl = screen.getByText('사진 크기').compareDocumentPosition(screen.getByText('타이틀'));
+
+    expect(scaleControl & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('updates promo text inputs', async () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.clear(screen.getByLabelText('타이틀'));
     await user.type(screen.getByLabelText('타이틀'), '델몬트 바나나');
 
     expect(screen.getByLabelText('타이틀')).toHaveValue('델몬트 바나나');
   });
 
-  it('warns when the uploaded source image is lower than 1000 x 1000', async () => {
+  it('does not show a low-resolution warning after upload', async () => {
     vi.stubGlobal('Image', MockImage);
     vi.stubGlobal('URL', {
       createObjectURL: vi.fn(() => 'blob:fruit-photo'),
@@ -54,8 +62,6 @@ describe('App', () => {
     const file = new File(['fruit'], 'banana.jpg', { type: 'image/jpeg' });
     await user.upload(screen.getByLabelText('과일 사진 업로드'), file);
 
-    expect(
-      await screen.findByText('원본 사진 해상도가 낮아 결과물이 흐릴 수 있습니다.'),
-    ).toBeInTheDocument();
+    expect(screen.queryByText('원본 사진 해상도가 낮아 결과물이 흐릴 수 있습니다.')).not.toBeInTheDocument();
   });
 });
