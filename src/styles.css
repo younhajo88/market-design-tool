@@ -1,6 +1,6 @@
 :root {
   color: #1f2933;
-  background: #f6f7f2;
+  background: #f4f6ef;
   font-family:
     Pretendard,
     'Noto Sans KR',
@@ -25,7 +25,7 @@ input {
 .app-shell {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
   gap: 24px;
   padding: 24px;
 }
@@ -33,13 +33,24 @@ input {
 .editor-panel {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
-.editor-panel h1 {
+.title-block {
+  display: grid;
+  gap: 6px;
+}
+
+.title-block h1 {
   margin: 0;
   font-size: 28px;
   line-height: 1.2;
+}
+
+.title-block p {
+  margin: 0;
+  color: #59624c;
+  line-height: 1.5;
 }
 
 .field-stack {
@@ -47,9 +58,10 @@ input {
   gap: 14px;
 }
 
-.field-stack label {
+.field-stack label,
+.slider-field {
   display: grid;
-  gap: 6px;
+  gap: 7px;
   font-weight: 700;
 }
 
@@ -61,22 +73,92 @@ input {
   background: #ffffff;
 }
 
+.slider-field input {
+  width: 100%;
+  accent-color: #316b43;
+}
+
+.upload-zone {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+  align-items: center;
+  border: 1px dashed #7f8b68;
+  border-radius: 8px;
+  padding: 14px;
+  background: #ffffff;
+  color: #26301f;
+  cursor: pointer;
+}
+
+.upload-zone small {
+  grid-column: 2;
+  color: #69725b;
+  line-height: 1.4;
+}
+
+.upload-zone input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.status-message,
+.warning-message {
+  margin: 0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  line-height: 1.45;
+}
+
+.status-message {
+  background: #fff1f0;
+  color: #9f1f18;
+}
+
+.warning-message {
+  background: #fff8d8;
+  color: #695000;
+}
+
 .preview-panel {
   display: grid;
   place-items: center;
   min-width: 0;
 }
 
-.preview-placeholder {
-  width: min(100%, 720px);
+.canvas-frame {
+  position: relative;
+  width: min(100%, 760px, calc(100vh - 48px));
   aspect-ratio: 1 / 1;
+  background: #ffffff;
+  border: 1px solid #d4dac8;
+  overflow: hidden;
+}
+
+.promo-canvas,
+.preview-placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.promo-canvas {
+  display: block;
+  touch-action: none;
+}
+
+.preview-placeholder {
   display: grid;
   place-items: center;
-  border: 1px dashed #87906f;
-  background: #ffffff;
   color: #66704f;
   text-align: center;
   padding: 20px;
+  pointer-events: none;
 }
 
 @media (max-width: 760px) {
@@ -87,5 +169,10 @@ input {
 
   .preview-panel {
     order: -1;
+  }
+
+  .canvas-frame {
+    width: min(100%, calc(100vh - 340px));
+    min-width: 260px;
   }
 }
