@@ -125,6 +125,26 @@ input {
 }
 
 
+.export-section {
+  display: grid;
+  gap: 10px;
+}
+
+.format-field {
+  display: grid;
+  gap: 7px;
+  font-weight: 700;
+}
+
+.format-field select {
+  width: 100%;
+  border: 1px solid #b8c0ad;
+  border-radius: 8px;
+  padding: 11px 12px;
+  background: #ffffff;
+  color: #1f2933;
+  font: inherit;
+}
 .export-actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -195,6 +215,26 @@ input {
   }
 
   
+.export-section {
+  display: grid;
+  gap: 10px;
+}
+
+.format-field {
+  display: grid;
+  gap: 7px;
+  font-weight: 700;
+}
+
+.format-field select {
+  width: 100%;
+  border: 1px solid #b8c0ad;
+  border-radius: 8px;
+  padding: 11px 12px;
+  background: #ffffff;
+  color: #1f2933;
+  font: inherit;
+}
 .export-actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

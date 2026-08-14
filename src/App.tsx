@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react';
 import { CANVAS_SIZE, DEFAULT_TEXT } from './canvas/constants';
-import { exportWebp } from './canvas/exportWebp';
+import { exportImage } from './canvas/exportWebp';
 import { clampScale, getInitialTransform, getMinimumCoverScale } from './canvas/geometry';
 import { ExportActions, downloadBlob } from './components/ExportActions';
 import { ImageUploader } from './components/ImageUploader';
 import { PromoCanvas } from './components/PromoCanvas';
 import { TextControls } from './components/TextControls';
 import { TransformControls } from './components/TransformControls';
-import type { ImageTransform, PromoText } from './types';
+import type { ExportFormat, ImageTransform, PromoText } from './types';
 import './styles.css';
 
 const EMPTY_TRANSFORM: ImageTransform = { x: 0, y: 0, scale: 1 };
@@ -18,6 +18,7 @@ export default function App() {
   const [transform, setTransform] = useState<ImageTransform>(EMPTY_TRANSFORM);
   const [message, setMessage] = useState<string>('');
   const [warning, setWarning] = useState<string>('');
+  const [format, setFormat] = useState<ExportFormat>('jpg');
 
   const minimumScale = useMemo(() => {
     if (!image) {
@@ -57,7 +58,7 @@ export default function App() {
     }
 
     try {
-      const result = await exportWebp(image, text, transform);
+      const result = await exportImage(image, text, transform, format);
       downloadBlob(result.blob, result.fileName);
       setMessage('');
     } catch {
@@ -71,7 +72,7 @@ export default function App() {
     }
 
     try {
-      const result = await exportWebp(image, text, transform);
+      const result = await exportImage(image, text, transform, format);
       const file = new File([result.blob], result.fileName, { type: result.mimeType });
       await navigator.share({ files: [file], title: '홍보이미지디자인툴' });
       setMessage('');
@@ -84,8 +85,8 @@ export default function App() {
     if (!image || !navigator.share || !navigator.canShare) {
       return false;
     }
-    const probeFile = new File([new Blob(['probe'], { type: 'image/webp' })], 'probe.webp', {
-      type: 'image/webp',
+    const probeFile = new File([new Blob(['probe'], { type: selectedMimeType(format) })], `probe.${format}`, {
+      type: selectedMimeType(format),
     });
     return navigator.canShare({ files: [probeFile] });
   })();
@@ -95,7 +96,7 @@ export default function App() {
       <section className="editor-panel" aria-labelledby="app-title">
         <div className="title-block">
           <h1 id="app-title">홍보이미지디자인툴</h1>
-          <p>과일 사진을 올리고 문구만 바꿔 WebP 홍보 이미지를 저장하세요.</p>
+          <p>과일 사진을 올리고 문구만 바꿔 홍보 이미지를 저장하세요.</p>
         </div>
 
         <ImageUploader onImageLoaded={handleImageLoaded} onError={setMessage} />
@@ -112,6 +113,8 @@ export default function App() {
         <ExportActions
           canExport={Boolean(image)}
           canShare={canShare}
+          format={format}
+          onFormatChange={setFormat}
           onExport={handleExport}
           onShare={handleShare}
         />
@@ -130,4 +133,13 @@ export default function App() {
       </section>
     </main>
   );
+}
+function selectedMimeType(format: ExportFormat) {
+  if (format === 'jpg') {
+    return 'image/jpeg';
+  }
+  if (format === 'png') {
+    return 'image/png';
+  }
+  return 'image/webp';
 }

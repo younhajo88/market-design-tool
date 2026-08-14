@@ -10,8 +10,12 @@ export type ImageTransform = {
   scale: number;
 };
 
+export type ExportFormat = 'jpg' | 'webp' | 'png';
+
+export type ExportMimeType = 'image/jpeg' | 'image/webp' | 'image/png';
+
 export type ExportResult = {
   blob: Blob;
   fileName: string;
-  mimeType: 'image/webp';
+  mimeType: ExportMimeType;
 };
